@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/flatui_wet_asphalt"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iconst"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_weight="0"
+            app:srcCompat="@drawable/st1" />
+
+        <LinearLayout
+            android:id="@+id/ll_click"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_itme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="TextView"
+                android:textColor="@color/color3"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txt_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="2"
+                android:text="desc"
+                android:textColor="@color/color1" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_favorite"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="9dp"
+            android:layout_weight="0"
+            android:padding="5dp"
+            app:srcCompat="@drawable/favorite0" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

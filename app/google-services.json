@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "680842372191",
+    "firebase_url": "https://radio-898fc.firebaseio.com",
+    "project_id": "radio-898fc",
+    "storage_bucket": "radio-898fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680842372191:android:2d123f0ffc937113",
+        "android_client_info": {
+          "package_name": "com.example.clientimadradio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680842372191-p2u4v0q6bd804bb9glj1vgvrrdnln2mt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clientimadradio",
+            "certificate_hash": "e31351e9fa8e252ec4d6626d59dea782f376c5f9"
+          }
+        },
+        {
+          "client_id": "680842372191-d91r0a18or771775etds56b03uc3n0r3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuY5jCChOhsNIJDF4f8eF2Ok9KVLk5E3U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680842372191-d91r0a18or771775etds56b03uc3n0r3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

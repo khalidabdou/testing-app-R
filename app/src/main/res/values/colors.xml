@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#ff6b6b</color>
+    <color name="colorPrimaryDark">#34495e</color>
+    <color name="colorAccent">#b5c0302b</color>
+    <color name="flatui_turquoise">#1abc9c</color>
+    <color name="flatui_green_sea">#5ad9c0</color>
+    <color name="flatui_emerald">#2ecc71</color>
+    <color name="flatui_nephritis">#27ae60</color>
+    <color name="flatui_peter_river">#3498db</color>
+    <color name="flatui_belize_hole">#6f9cb9</color>
+    <color name="flatui_amethyst">#b09ab9</color>
+    <color name="flatui_wisteria">#858E44AD</color>
+    <color name="flatui_wet_asphalt">#1A2632</color>
+    <color name="flatui_midnight_blue">#384049</color>
+    <color name="flatui_sun_flower">#eaed13</color>
+    <color name="flatui_orange">#fac97c</color>
+    <color name="flatui_carrot">#d18eee</color>
+    <color name="flatui_pumpkin">#D35400</color>
+    <color name="flatui_alizarin">#7DE74C3C</color>
+    <color name="flatui_pomegranate">#b5c0302b</color>
+    <color name="flatui_clouds">#ecf0f1</color>
+    <color name="flatui_silver">#bdc3c7</color>
+    <color name="flatui_concrete">#95a5a6</color>
+    <color name="flatui_asbestos">#69cc67</color>
+    <color name="color1">#2CDA7C</color>
+    <color name="color2">#15AB88</color>
+    <color name="color3">#FBDB5D</color>
+    <color name="color4">#d2d7d3</color>
+    <color name="color5">#f0a698</color>
+
+</resources>
