@@ -1,6 +1,7 @@
 package com.example.clientimadradio;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -250,18 +251,35 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
                     }
                 });
             }else {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+               // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
             }
         } else if (id == R.id.more_app) {
+            openWebPage("http://play.google.com/store/apps/details?id="+getPackageName());
+
 
         } else if (id == R.id.rate_app) {
-
+            openWebPage("http://play.google.com/store/apps/details?id="+getPackageName());
         } else if (id == R.id.nav_share) {
-
+            try {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                String shareMessage= "\nLet me recommend you this application\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "choose one"));
+            } catch(Exception e) {
+                //e.toString();
+            }
 
         } else if (id == R.id.exit) {
 
+            mediaPlayer.stop();
+            PlayTask.cancel(true);
+            ActivityCompat.finishAffinity(MainActivity.this);
+
+            super.onBackPressed();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -319,5 +337,11 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
 
 
         }
+    }
+
+
+    public void openWebPage(String url) {
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(myIntent);
     }
 }
