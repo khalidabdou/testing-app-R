@@ -21,7 +21,8 @@ public class db_manager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table stations (idS INTEGER,img TEXT,nameS TEXT,descS TEXT, urlS TEXT, favorite INTEGER)");
+        String mySql="create table stations (idS INTEGER,img TEXT,nameS TEXT,descS TEXT, urlS TEXT, favorite INTEGER)";
+        db.execSQL(mySql);
 
     }
 
@@ -36,8 +37,12 @@ public class db_manager extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         long insert = db.insert("stations", null, contentValues);
         if (insert == -1) {
+            db.close();
             return false;
-        } else return true;
+        } else {
+            db.close();
+            return true;
+        }
     }
 
     public ArrayList<Tab1.class_items> getsations() {
@@ -110,6 +115,8 @@ public class db_manager extends SQLiteOpenHelper {
         } else strSQL = "UPDATE stations SET favorite = 1 WHERE idS = " + id;
 
         db.execSQL(strSQL);
+
     }
+
 
 }

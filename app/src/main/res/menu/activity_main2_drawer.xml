@@ -5,17 +5,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/Privacy"
             android:icon="@drawable/ic_menu_manage"
             android:title="Privacy Policy" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/GDPR"
             android:icon="@drawable/ic_menu_manage"
             android:title="GDPR" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/more_app"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Slideshow" />
+            android:title="More Apps" />
+        <item
+            android:id="@+id/rate_app"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Rate App" />
 
     </group>
 
@@ -27,7 +31,7 @@
                 android:title="Share" />
 
             <item
-                android:id="@+id/exite"
+                android:id="@+id/exit"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Exit" />
         </menu>

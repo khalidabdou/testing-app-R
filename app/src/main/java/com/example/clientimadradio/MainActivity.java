@@ -5,9 +5,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -26,8 +25,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import java.io.IOException;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentInteractionListener, Tab2.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
     static PlayTask PlayTask;
     Context context;
     db_manager dbase;
+    ConsentSDK consentSDK;
+    private AdView mAdView;
+
 
     //volume
     private SeekBar volumeSeekbar = null;
@@ -64,6 +69,24 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         context = this;
+        consentSDK = new ConsentSDK.Builder(this)
+                .addPrivacyPolicy("http://www.mediafire.com/file/dmx2x432cm8m1lm/pry.txt/file") // Add your privacy policy url
+                .addPublisherId("pub-4657176966074920") // Add your admob publisher id
+                .build();
+        consentSDK.checkConsent(new ConsentSDK.ConsentCallback() {
+            @Override
+            public void onResult(boolean isRequestLocationInEeaOrUnknown) {
+
+            }
+        });
+
+        MobileAds.initialize(this,
+                "ca-app-pub-3940256099942544~3347511713");
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
 
         //================
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -211,18 +234,33 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.Privacy) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.GDPR) {
+// To request the consent form to re-edit it for the users within EEA
+            if (consentSDK.isUserLocationWithinEea(context)){
+                consentSDK = new ConsentSDK.Builder(context)
+                        .addPrivacyPolicy("http://www.mediafire.com/file/dmx2x432cm8m1lm/pry.txt/file") // Add your privacy policy url
+                        .addPublisherId("pub-4657176966074920") // Add your admob publisher id
+                        .build();
+                consentSDK.checkConsent(new ConsentSDK.ConsentCallback() {
+                    @Override
+                    public void onResult(boolean isRequestLocationInEeaOrUnknown) {
+                        Toast.makeText(context, String.valueOf(isRequestLocationInEeaOrUnknown), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        } else if (id == R.id.more_app) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.rate_app) {
 
         } else if (id == R.id.nav_share) {
-            Toast.makeText(context, "share", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.exit) {
 
         }
 

@@ -1,9 +1,6 @@
 package com.example.clientimadradio;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -81,17 +78,19 @@ public class Main2Activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.Privacy) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.GDPR) {
 
-        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.more_app) {
+
+        } else if (id == R.id.rate_app) {
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.exit) {
 
-        } else if (id == R.id.nav_share) {
 
         }
 

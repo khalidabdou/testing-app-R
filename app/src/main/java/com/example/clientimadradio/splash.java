@@ -5,8 +5,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -39,18 +42,25 @@ public class splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         context = this;
+
+
         contentValues = new ContentValues();
         dbase = new db_manager(this);
         sharedPreferences = getSharedPreferences("myshared", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("station");
-        if (!sharedPreferences.getBoolean("first_time", false)) {
+
+        if (!sharedPreferences.getBoolean("first_time", false) && isConnectingToInternet()) {
             editor.putBoolean("first_time", true);
             editor.commit();
             insertdataTask = new InsertdataTask();
             insertdataTask.doInBackground();
         } else startActivity(new Intent(context, MainActivity.class));
+
+
+
+
 
 
     }
@@ -93,6 +103,19 @@ public class splash extends AppCompatActivity {
         });
     }
 
+    public boolean isConnectingToInternet() {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null)
+                for (int i = 0; i < info.length; i++)
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+
+        }
+        return false;
+    }
 
     //insert data
     public class InsertdataTask extends AsyncTask<String, Void, Boolean> {
@@ -112,7 +135,6 @@ public class splash extends AppCompatActivity {
 
         }
     }
-
-
 }
+
 

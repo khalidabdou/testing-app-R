@@ -63,47 +63,7 @@ public class Tab1 extends Fragment {
         return fragment;
     }
 
-    public static int geticon(int id) {
-        HashMap<Integer, Integer> array_image = new HashMap<Integer, Integer>();
 
-        array_image.put(1, R.drawable.st1);
-        array_image.put(2, R.drawable.st2);
-        array_image.put(3, R.drawable.st3);
-        array_image.put(4, R.drawable.st4);
-        array_image.put(5, R.drawable.st5);
-        array_image.put(6, R.drawable.st6);
-        array_image.put(7, R.drawable.st7);
-        array_image.put(8, R.drawable.st8);
-        array_image.put(9, R.drawable.st9);
-        array_image.put(10, R.drawable.st10);
-        array_image.put(11, R.drawable.st11);
-        array_image.put(13, R.drawable.st13);
-        array_image.put(14, R.drawable.st14);
-        array_image.put(15, R.drawable.st15);
-        array_image.put(16, R.drawable.st16);
-        array_image.put(17, R.drawable.st17);
-        array_image.put(20, R.drawable.st20);
-        array_image.put(23, R.drawable.st23);
-        array_image.put(26, R.drawable.st26);
-        array_image.put(44, R.drawable.st44);
-        array_image.put(45, R.drawable.st45);
-        array_image.put(46, R.drawable.st46);
-        array_image.put(47, R.drawable.st47);
-        array_image.put(50, R.drawable.st50);
-        array_image.put(52, R.drawable.st52);
-        array_image.put(53, R.drawable.st53);
-        array_image.put(55, R.drawable.st55);
-        array_image.put(57, R.drawable.st57);
-        array_image.put(69, R.drawable.st69);
-        array_image.put(81, R.drawable.st81);
-        array_image.put(82, R.drawable.st82);
-        array_image.put(83, R.drawable.st83);
-        array_image.put(84, R.drawable.st84);
-        array_image.put(85, R.drawable.st85);
-        array_image.put(109, R.drawable.st109);
-
-        return array_image.get(id);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -247,7 +207,6 @@ public class Tab1 extends Fragment {
                             if (!listF.contains(al_item.get(position))) {
                                 listF.add(al_item.get(position));
                             }
-
                         }
                         Tab2.listadapter.notifyDataSetChanged();
 
@@ -276,6 +235,46 @@ public class Tab1 extends Fragment {
             return view2;
         }
     }
+    public static int geticon(int id) {
+        HashMap<Integer, Integer> array_image = new HashMap<Integer, Integer>();
 
+        array_image.put(1, R.drawable.st1);
+        array_image.put(2, R.drawable.st2);
+        array_image.put(3, R.drawable.st3);
+        array_image.put(4, R.drawable.st4);
+        array_image.put(5, R.drawable.st5);
+        array_image.put(6, R.drawable.st6);
+        array_image.put(7, R.drawable.st7);
+        array_image.put(8, R.drawable.st8);
+        array_image.put(9, R.drawable.st9);
+        array_image.put(10, R.drawable.st10);
+        array_image.put(11, R.drawable.st11);
+        array_image.put(13, R.drawable.st13);
+        array_image.put(14, R.drawable.st14);
+        array_image.put(15, R.drawable.st15);
+        array_image.put(16, R.drawable.st16);
+        array_image.put(17, R.drawable.st17);
+        array_image.put(20, R.drawable.st20);
+        array_image.put(23, R.drawable.st23);
+        array_image.put(26, R.drawable.st26);
+        array_image.put(44, R.drawable.st44);
+        array_image.put(45, R.drawable.st45);
+        array_image.put(46, R.drawable.st46);
+        array_image.put(47, R.drawable.st47);
+        array_image.put(50, R.drawable.st50);
+        array_image.put(52, R.drawable.st52);
+        array_image.put(53, R.drawable.st53);
+        array_image.put(55, R.drawable.st55);
+        array_image.put(57, R.drawable.st57);
+        array_image.put(69, R.drawable.st69);
+        array_image.put(81, R.drawable.st81);
+        array_image.put(82, R.drawable.st82);
+        array_image.put(83, R.drawable.st83);
+        array_image.put(84, R.drawable.st84);
+        array_image.put(85, R.drawable.st85);
+        array_image.put(109, R.drawable.st109);
+
+        return array_image.get(id);
+    }
 
 }
