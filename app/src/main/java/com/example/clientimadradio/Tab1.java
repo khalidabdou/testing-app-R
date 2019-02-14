@@ -32,9 +32,12 @@ public class Tab1 extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     static listadapter listadapter;
-    static ArrayList<class_items> listF = new ArrayList<>();
-    static ArrayList<class_items> liststations;
+    static ArrayList<class_itm> listF = new ArrayList<>();
+    static ArrayList<class_itm> liststations;
+    static ArrayList<class_itm> filterlist;
+    static Context mContext;
     db_manager dbase;
+    ListView LVStations;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -63,7 +66,64 @@ public class Tab1 extends Fragment {
         return fragment;
     }
 
+    public static int geticon(int id) {
+        HashMap<Integer, Integer> array_image = new HashMap<Integer, Integer>();
 
+        array_image.put(1, R.drawable.st1);
+        array_image.put(2, R.drawable.st2);
+        array_image.put(3, R.drawable.st3);
+        array_image.put(4, R.drawable.st4);
+        array_image.put(5, R.drawable.st5);
+        array_image.put(6, R.drawable.st6);
+        array_image.put(7, R.drawable.st7);
+        array_image.put(8, R.drawable.st8);
+        array_image.put(9, R.drawable.st9);
+        array_image.put(10, R.drawable.st10);
+        array_image.put(11, R.drawable.st11);
+        array_image.put(13, R.drawable.st13);
+        array_image.put(14, R.drawable.st14);
+        array_image.put(15, R.drawable.st15);
+        array_image.put(16, R.drawable.st16);
+        array_image.put(17, R.drawable.st17);
+        array_image.put(20, R.drawable.st20);
+        array_image.put(23, R.drawable.st23);
+        array_image.put(26, R.drawable.st26);
+        array_image.put(44, R.drawable.st44);
+        array_image.put(45, R.drawable.st45);
+        array_image.put(46, R.drawable.st46);
+        array_image.put(47, R.drawable.st47);
+        array_image.put(50, R.drawable.st50);
+        array_image.put(52, R.drawable.st52);
+        array_image.put(53, R.drawable.st53);
+        array_image.put(55, R.drawable.st55);
+        array_image.put(57, R.drawable.st57);
+        array_image.put(69, R.drawable.st69);
+        array_image.put(81, R.drawable.st81);
+        array_image.put(82, R.drawable.st82);
+        array_image.put(83, R.drawable.st83);
+        array_image.put(84, R.drawable.st84);
+        array_image.put(85, R.drawable.st85);
+        array_image.put(109, R.drawable.st109);
+
+        return array_image.get(id);
+    }
+
+    //filter
+    public static void filter(String charText) {
+        liststations.clear();
+        int j = 0;
+        for (int i = 0; i < filterlist.size(); i++) {
+            String title = filterlist.get(i).name_station.toLowerCase();
+            if (!title.contains(charText)) {
+                liststations.remove(filterlist.get(i));
+            } else {
+                liststations.add(filterlist.get(i));
+            }
+            j = i;
+        }
+        //Toast.makeText(mContext, String.valueOf(j), Toast.LENGTH_SHORT).show();
+        listadapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,14 +139,24 @@ public class Tab1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         listF.clear();
+        mContext = getActivity();
         dbase = new db_manager(getActivity());
-        liststations = new ArrayList<>();
         liststations = dbase.getsations();
+        filterlist = dbase.getsations();
+        Toast.makeText(getContext(), String.valueOf(filterlist.size()), Toast.LENGTH_SHORT).show();
 
         View viewlist = inflater.inflate(R.layout.fragment_tab1, container, false);
-        ListView LVStations = viewlist.findViewById(R.id.lv_stations);
+        LVStations = viewlist.findViewById(R.id.lv_stations);
         listadapter = new listadapter(liststations);
         LVStations.setAdapter(listadapter);
+
+
+        for (int i = 0; i < liststations.size(); i++) {
+            if (liststations.get(i).favorite == 1) {
+                listF.add(liststations.get(i));
+            }
+        }
+
 
         // Inflate the layout for this fragment
         return viewlist;
@@ -116,7 +186,6 @@ public class Tab1 extends Fragment {
         mListener = null;
     }
 
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -132,29 +201,10 @@ public class Tab1 extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public static class class_items {
-        int ids;
-        String img;
-        String name_station;
-        String desc;
-        String url;
-        int favorite;
-
-        class_items(int ids, String img, String name_station, String desc, String url, int favorite) {
-            this.ids = ids;
-            this.img = img;
-            this.name_station = name_station;
-            this.desc = desc;
-            this.url = url;
-            this.favorite = favorite;
-        }
-
-    }
-
     public class listadapter extends BaseAdapter {
-        ArrayList<class_items> al_item = new ArrayList<>();
+        ArrayList<class_itm> al_item = new ArrayList<>();
 
-        listadapter(ArrayList<class_items> al_item) {
+        listadapter(ArrayList<class_itm> al_item) {
             this.al_item = al_item;
         }
 
@@ -198,15 +248,15 @@ public class Tab1 extends Fragment {
                             img_fav.setImageDrawable(getResources().getDrawable(R.drawable.favorite0));
                             dbase.updatefav(al_item.get(position).ids, 1);
                             al_item.get(position).favorite = 0;
-                            if (listF.contains(al_item.get(position)))
-                                listF.remove(al_item.get(position));
+
+                            listF.remove(al_item.get(position));
                         } else {
                             img_fav.setImageDrawable(getResources().getDrawable(R.drawable.favor));
                             dbase.updatefav(al_item.get(position).ids, 0);
                             al_item.get(position).favorite = 1;
-                            if (!listF.contains(al_item.get(position))) {
-                                listF.add(al_item.get(position));
-                            }
+
+                            listF.add(al_item.get(position));
+
                         }
                         Tab2.listadapter.notifyDataSetChanged();
 
@@ -230,51 +280,11 @@ public class Tab1 extends Fragment {
             //filtration
             if (al_item.get(position).favorite == 1 && !listF.contains(al_item.get(position))) {
 
-                listF.add(al_item.get(position));
+                // listF.add(al_item.get(position));
+                // Tab2.listadapter.notifyDataSetChanged();
             }
             return view2;
         }
-    }
-    public static int geticon(int id) {
-        HashMap<Integer, Integer> array_image = new HashMap<Integer, Integer>();
-
-        array_image.put(1, R.drawable.st1);
-        array_image.put(2, R.drawable.st2);
-        array_image.put(3, R.drawable.st3);
-        array_image.put(4, R.drawable.st4);
-        array_image.put(5, R.drawable.st5);
-        array_image.put(6, R.drawable.st6);
-        array_image.put(7, R.drawable.st7);
-        array_image.put(8, R.drawable.st8);
-        array_image.put(9, R.drawable.st9);
-        array_image.put(10, R.drawable.st10);
-        array_image.put(11, R.drawable.st11);
-        array_image.put(13, R.drawable.st13);
-        array_image.put(14, R.drawable.st14);
-        array_image.put(15, R.drawable.st15);
-        array_image.put(16, R.drawable.st16);
-        array_image.put(17, R.drawable.st17);
-        array_image.put(20, R.drawable.st20);
-        array_image.put(23, R.drawable.st23);
-        array_image.put(26, R.drawable.st26);
-        array_image.put(44, R.drawable.st44);
-        array_image.put(45, R.drawable.st45);
-        array_image.put(46, R.drawable.st46);
-        array_image.put(47, R.drawable.st47);
-        array_image.put(50, R.drawable.st50);
-        array_image.put(52, R.drawable.st52);
-        array_image.put(53, R.drawable.st53);
-        array_image.put(55, R.drawable.st55);
-        array_image.put(57, R.drawable.st57);
-        array_image.put(69, R.drawable.st69);
-        array_image.put(81, R.drawable.st81);
-        array_image.put(82, R.drawable.st82);
-        array_image.put(83, R.drawable.st83);
-        array_image.put(84, R.drawable.st84);
-        array_image.put(85, R.drawable.st85);
-        array_image.put(109, R.drawable.st109);
-
-        return array_image.get(id);
     }
 
 }

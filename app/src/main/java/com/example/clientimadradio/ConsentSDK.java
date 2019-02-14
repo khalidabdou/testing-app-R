@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.ads.consent.ConsentForm;
 import com.google.ads.consent.ConsentFormListener;
@@ -22,30 +21,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 class ConsentSDK {
-    public abstract static class ConsentCallback {
-        abstract public void onResult(boolean isRequestLocationInEeaOrUnknown);
-    }
-
-    public abstract static class ConsentStatusCallback {
-        abstract public void onResult(boolean isRequestLocationInEeaOrUnknown, int isConsentPersonalized);
-    }
-
-    public abstract static class ConsentInformationCallback {
-        abstract public void onResult(ConsentInformation consentInformation, ConsentStatus consentStatus);
-
-        abstract public void onFailed(ConsentInformation consentInformation, String reason);
-    }
-
-    public abstract static class LocationIsEeaOrUnknownCallback {
-        abstract public void onResult(boolean isRequestLocationInEeaOrUnknown);
-    }
-
     private static String ads_preference = "ads_preference";
     private static String user_status = "user_status";
     private static boolean PERSONALIZED = true;
     private static boolean NON_PERSONALIZED = false;
     private static String preferences_name = "com.ayoubfletcher.consentsdk";
-
+    // Admob banner test id
+    private static String DUMMY_BANNER = "ca-app-pub-3940256099942544/6300978111";
+    public ConsentSDK consentSDK;
     private Context context;
     private ConsentForm form;
     private String LOG_TAG = "ID_LOG";
@@ -53,65 +36,23 @@ class ConsentSDK {
     private boolean DEBUG = false;
     private String privacyURL;
     private String publisherId;
-    public ConsentSDK consentSDK;
-
-    // Admob banner test id
-    private static String DUMMY_BANNER = "ca-app-pub-3940256099942544/6300978111";
-
     private SharedPreferences settings;
-
-
-    // Builder class
-    public static class Builder {
-
-        private Context context;
-        private String LOG_TAG = "ID_LOG";
-        private String DEVICE_ID = "";
-        private boolean DEBUG = false;
-        private String privacyURL;
-        private String publisherId;
-
-        // Initialize Builder
-        public Builder(Context context) {
-            this.context = context;
-        }
-
-        // Add test device id
-        public Builder addTestDeviceId(String device_id) {
-            this.DEVICE_ID = device_id;
-            this.DEBUG = true;
-            return this;
-        }
-
-        // Add privacy policy
-        public Builder addPrivacyPolicy(String privacyURL) {
-            this.privacyURL = privacyURL;
-            return this;
-        }
-
-        // Add Publisher Id
-        public Builder addPublisherId(String publisherId) {
-            this.publisherId = publisherId;
-            return this;
-        }
-
-        // Add Logcat id
-        public Builder addCustomLogTag(String LOG_TAG) {
-            this.LOG_TAG = LOG_TAG;
-            return this;
-        }
-
-        // Build
-        public ConsentSDK build() {
-            if (this.DEBUG) {
-                ConsentSDK consentSDK = new ConsentSDK(context, publisherId, privacyURL, true);
-                consentSDK.LOG_TAG = this.LOG_TAG;
-                consentSDK.DEVICE_ID = this.DEVICE_ID;
-                return consentSDK;
-            } else {
-                return new ConsentSDK(context, publisherId, privacyURL);
-            }
-        }
+    // Initialize debug
+    public ConsentSDK(Context context, String publisherId, String privacyURL, boolean DEBUG) {
+        this.context = context;
+        this.settings = initPreferences(context);
+        this.publisherId = publisherId;
+        this.privacyURL = privacyURL;
+        this.DEBUG = DEBUG;
+        this.consentSDK = this;
+    }
+    // Initialize production
+    public ConsentSDK(Context context, String publisherId, String privacyURL) {
+        this.context = context;
+        this.settings = context.getSharedPreferences(preferences_name, Context.MODE_PRIVATE);
+        this.publisherId = publisherId;
+        this.privacyURL = privacyURL;
+        this.consentSDK = this;
     }
 
     // Initialize dummy banner
@@ -122,49 +63,15 @@ class ConsentSDK {
         adView.loadAd(new AdRequest.Builder().build());
     }
 
-    // Initialize debug
-    public ConsentSDK(Context context, String publisherId, String privacyURL, boolean DEBUG) {
-        this.context = context;
-        this.settings = initPreferences(context);
-        this.publisherId = publisherId;
-        this.privacyURL = privacyURL;
-        this.DEBUG = DEBUG;
-        this.consentSDK = this;
-    }
-
     // Initialize SharedPreferences
     private static SharedPreferences initPreferences(Context context) {
         return context.getSharedPreferences(preferences_name, Context.MODE_PRIVATE);
-    }
-
-    // Initialize production
-    public ConsentSDK(Context context, String publisherId, String privacyURL) {
-        this.context = context;
-        this.settings = context.getSharedPreferences(preferences_name, Context.MODE_PRIVATE);
-        this.publisherId = publisherId;
-        this.privacyURL = privacyURL;
-        this.consentSDK = this;
     }
 
     // Consent status
     public static boolean isConsentPersonalized(Context context) {
         SharedPreferences settings = initPreferences(context);
         return settings.getBoolean(ads_preference, PERSONALIZED);
-    }
-
-    // Consent is personalized
-    private void consentIsPersonalized() {
-        settings.edit().putBoolean(ads_preference, PERSONALIZED).apply();
-    }
-
-    // Consent is non personalized
-    private void consentIsNonPersonalized() {
-        settings.edit().putBoolean(ads_preference, NON_PERSONALIZED).apply();
-    }
-
-    // Consent is within
-    private void updateUserStatus(boolean status) {
-        settings.edit().putBoolean(user_status, status).apply();
     }
 
     // Get AdRequest
@@ -184,6 +91,26 @@ class ConsentSDK {
         Bundle extras = new Bundle();
         extras.putString("npa", "1");
         return extras;
+    }
+
+    // Check the user location
+    public static boolean isUserLocationWithinEea(Context context) {
+        return initPreferences(context).getBoolean(user_status, false);
+    }
+
+    // Consent is personalized
+    private void consentIsPersonalized() {
+        settings.edit().putBoolean(ads_preference, PERSONALIZED).apply();
+    }
+
+    // Consent is non personalized
+    private void consentIsNonPersonalized() {
+        settings.edit().putBoolean(ads_preference, NON_PERSONALIZED).apply();
+    }
+
+    // Consent is within
+    private void updateUserStatus(boolean status) {
+        settings.edit().putBoolean(user_status, status).apply();
     }
 
     // Consent information
@@ -225,11 +152,6 @@ class ConsentSDK {
                 callback.onResult(false);
             }
         });
-    }
-
-    // Check the user location
-    public static boolean isUserLocationWithinEea(Context context) {
-        return initPreferences(context).getBoolean(user_status, false);
     }
 
     // Initialize Consent SDK
@@ -361,6 +283,77 @@ class ConsentSDK {
                 .withNonPersonalizedAdsOption()
                 .build();
         form.load();
+    }
+
+    public abstract static class ConsentCallback {
+        abstract public void onResult(boolean isRequestLocationInEeaOrUnknown);
+    }
+
+    public abstract static class ConsentStatusCallback {
+        abstract public void onResult(boolean isRequestLocationInEeaOrUnknown, int isConsentPersonalized);
+    }
+
+    public abstract static class ConsentInformationCallback {
+        abstract public void onResult(ConsentInformation consentInformation, ConsentStatus consentStatus);
+
+        abstract public void onFailed(ConsentInformation consentInformation, String reason);
+    }
+
+    public abstract static class LocationIsEeaOrUnknownCallback {
+        abstract public void onResult(boolean isRequestLocationInEeaOrUnknown);
+    }
+
+    // Builder class
+    public static class Builder {
+
+        private Context context;
+        private String LOG_TAG = "ID_LOG";
+        private String DEVICE_ID = "";
+        private boolean DEBUG = false;
+        private String privacyURL;
+        private String publisherId;
+
+        // Initialize Builder
+        public Builder(Context context) {
+            this.context = context;
+        }
+
+        // Add test device id
+        public Builder addTestDeviceId(String device_id) {
+            this.DEVICE_ID = device_id;
+            this.DEBUG = true;
+            return this;
+        }
+
+        // Add privacy policy
+        public Builder addPrivacyPolicy(String privacyURL) {
+            this.privacyURL = privacyURL;
+            return this;
+        }
+
+        // Add Publisher Id
+        public Builder addPublisherId(String publisherId) {
+            this.publisherId = publisherId;
+            return this;
+        }
+
+        // Add Logcat id
+        public Builder addCustomLogTag(String LOG_TAG) {
+            this.LOG_TAG = LOG_TAG;
+            return this;
+        }
+
+        // Build
+        public ConsentSDK build() {
+            if (this.DEBUG) {
+                ConsentSDK consentSDK = new ConsentSDK(context, publisherId, privacyURL, true);
+                consentSDK.LOG_TAG = this.LOG_TAG;
+                consentSDK.DEVICE_ID = this.DEVICE_ID;
+                return consentSDK;
+            } else {
+                return new ConsentSDK(context, publisherId, privacyURL);
+            }
+        }
     }
 }
 

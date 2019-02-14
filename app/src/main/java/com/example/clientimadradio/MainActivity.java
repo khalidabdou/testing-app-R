@@ -1,5 +1,6 @@
 package com.example.clientimadradio;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -7,16 +8,16 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +29,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 
 import java.io.IOException;
 
@@ -45,9 +45,8 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
     Context context;
     db_manager dbase;
     ConsentSDK consentSDK;
+    boolean search = false;
     private AdView mAdView;
-
-
     //volume
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
@@ -81,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
             }
         });
 
-        MobileAds.initialize(this,
-                "ca-app-pub-3940256099942544~3347511713");
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -91,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
 
         //================
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.color1));
 
         setSupportActionBar(toolbar);
         /*
@@ -116,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         icon_play = findViewById(R.id.icon_play);
 
         dbase = new db_manager(context);
+
+
+        //Toast.makeText(context, String.valueOf(Tab1.filterlist.size()), Toast.LENGTH_SHORT).show();
 
         initControls();
 
@@ -175,11 +176,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
                 }
             }
         });
-
-
         PlayTask.execute(stream);
-
-
     }
 
     @Override
@@ -239,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
             // Handle the camera action
         } else if (id == R.id.GDPR) {
 // To request the consent form to re-edit it for the users within EEA
-            if (consentSDK.isUserLocationWithinEea(context)){
+            if (consentSDK.isUserLocationWithinEea(context)) {
                 consentSDK = new ConsentSDK.Builder(context)
                         .addPrivacyPolicy("http://www.mediafire.com/file/dmx2x432cm8m1lm/pry.txt/file") // Add your privacy policy url
                         .addPublisherId("pub-4657176966074920") // Add your admob publisher id
@@ -250,26 +247,26 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
                         Toast.makeText(context, String.valueOf(isRequestLocationInEeaOrUnknown), Toast.LENGTH_SHORT).show();
                     }
                 });
-            }else {
-               // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            } else {
+                // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
             }
         } else if (id == R.id.more_app) {
-            openWebPage("http://play.google.com/store/apps/details?id="+getPackageName());
+            openWebPage("http://play.google.com/store/apps/details?id=" + getPackageName());
 
 
         } else if (id == R.id.rate_app) {
-            openWebPage("http://play.google.com/store/apps/details?id="+getPackageName());
+            openWebPage("http://play.google.com/store/apps/details?id=" + getPackageName());
         } else if (id == R.id.nav_share) {
             try {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                String shareMessage= "\nLet me recommend you this application\n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n";
+                String shareMessage = "\nLet me recommend you this application\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 startActivity(Intent.createChooser(shareIntent, "choose one"));
-            } catch(Exception e) {
+            } catch (Exception e) {
                 //e.toString();
             }
 
@@ -292,6 +289,25 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
+        final SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Tab1.filter(newText);
+
+
+                return true;
+            }
+        });
 
         return true;
     }
@@ -309,6 +325,11 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openWebPage(String url) {
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(myIntent);
     }
 
     public static class PlayTask extends AsyncTask<String, Void, Boolean> {
@@ -340,8 +361,4 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
     }
 
 
-    public void openWebPage(String url) {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(myIntent);
-    }
 }

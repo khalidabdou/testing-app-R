@@ -1,4 +1,4 @@
 package com.example.clientimadradio;
 
-public class testing {
+public class newclass {
 }

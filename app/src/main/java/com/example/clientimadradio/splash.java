@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -57,10 +56,6 @@ public class splash extends AppCompatActivity {
             insertdataTask = new InsertdataTask();
             insertdataTask.doInBackground();
         } else startActivity(new Intent(context, MainActivity.class));
-
-
-
-
 
 
     }

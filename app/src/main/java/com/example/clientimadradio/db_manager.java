@@ -21,7 +21,7 @@ public class db_manager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String mySql="create table stations (idS INTEGER,img TEXT,nameS TEXT,descS TEXT, urlS TEXT, favorite INTEGER)";
+        String mySql = "create table stations (idS INTEGER,img TEXT,nameS TEXT,descS TEXT, urlS TEXT, favorite INTEGER)";
         db.execSQL(mySql);
 
     }
@@ -45,9 +45,9 @@ public class db_manager extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<Tab1.class_items> getsations() {
+    public ArrayList<class_itm> getsations() {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Tab1.class_items> station = new ArrayList<>();
+        ArrayList<class_itm> station = new ArrayList<>();
         Cursor res = db.rawQuery("select * from stations", null);
         res.moveToFirst();
         if (res == null) {
@@ -57,7 +57,7 @@ public class db_manager extends SQLiteOpenHelper {
         }
         do {
             try {
-                station.add(new Tab1.class_items(
+                station.add(new class_itm(
                         res.getInt(0),
                         res.getString(1),
                         res.getString(2),
@@ -76,9 +76,9 @@ public class db_manager extends SQLiteOpenHelper {
 
 
     //get favorit
-    public ArrayList<Tab1.class_items> getsationsfavorite() {
+    public ArrayList<class_itm> getsationsfavorite() {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Tab1.class_items> stationfav = new ArrayList<>();
+        ArrayList<class_itm> stationfav = new ArrayList<>();
         Cursor res = db.rawQuery("select * from stations where favorite=1", null);
         res.moveToFirst();
         if (res == null) {
@@ -87,7 +87,7 @@ public class db_manager extends SQLiteOpenHelper {
         } else {
             do {
                 try {
-                    stationfav.add(new Tab1.class_items(
+                    stationfav.add(new class_itm(
                             res.getInt(0),
                             res.getString(1),
                             res.getString(2),

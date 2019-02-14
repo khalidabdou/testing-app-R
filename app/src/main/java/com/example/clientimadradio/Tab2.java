@@ -34,7 +34,7 @@ public class Tab2 extends Fragment {
     static db_manager dbase;
     static listadapter listadapter;
     static ListView LVStationsfav;
-    TextView txt;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -128,9 +128,9 @@ public class Tab2 extends Fragment {
     }
 
     public class listadapter extends BaseAdapter {
-        ArrayList<Tab1.class_items> al_item = new ArrayList<>();
+        ArrayList<class_itm> al_item = new ArrayList<>();
 
-        listadapter(ArrayList<Tab1.class_items> al_item) {
+        listadapter(ArrayList<class_itm> al_item) {
             this.al_item = al_item;
         }
 
