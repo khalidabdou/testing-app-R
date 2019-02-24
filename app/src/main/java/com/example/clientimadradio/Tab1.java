@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -143,7 +142,7 @@ public class Tab1 extends Fragment {
         dbase = new db_manager(getActivity());
         liststations = dbase.getsations();
         filterlist = dbase.getsations();
-        Toast.makeText(getContext(), String.valueOf(filterlist.size()), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getContext(), String.valueOf(filterlist.size()), Toast.LENGTH_SHORT).show();
 
         View viewlist = inflater.inflate(R.layout.fragment_tab1, container, false);
         LVStations = viewlist.findViewById(R.id.lv_stations);
@@ -264,7 +263,7 @@ public class Tab1 extends Fragment {
                     }
                 });
             } catch (Exception ex) {
-                Toast.makeText(getActivity(), String.valueOf(ex), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getActivity(), String.valueOf(ex), Toast.LENGTH_SHORT).show();
             }
 
             linearLayout_click.setOnClickListener(new View.OnClickListener() {
@@ -272,6 +271,7 @@ public class Tab1 extends Fragment {
                 public void onClick(View v) {
                     MainActivity.icon_play.setImageDrawable(getResources().getDrawable(geticon(al_item.get(position).ids)));
                     MainActivity.play(al_item.get(position).url, 0, al_item.get(position).name_station);
+
 
                 }
             });

@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -55,7 +56,16 @@ public class splash extends AppCompatActivity {
             editor.commit();
             insertdataTask = new InsertdataTask();
             insertdataTask.doInBackground();
-        } else startActivity(new Intent(context, MainActivity.class));
+        } else if (sharedPreferences.getBoolean("first_time", false) && isConnectingToInternet()) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    // yourMethod();
+                    startActivity(new Intent(context, MainActivity.class));
+                }
+            }, 3000);   //5 seconds
+
+        }
 
 
     }

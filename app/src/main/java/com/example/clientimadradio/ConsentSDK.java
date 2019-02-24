@@ -37,6 +37,7 @@ class ConsentSDK {
     private String privacyURL;
     private String publisherId;
     private SharedPreferences settings;
+
     // Initialize debug
     public ConsentSDK(Context context, String publisherId, String privacyURL, boolean DEBUG) {
         this.context = context;
@@ -46,6 +47,7 @@ class ConsentSDK {
         this.DEBUG = DEBUG;
         this.consentSDK = this;
     }
+
     // Initialize production
     public ConsentSDK(Context context, String publisherId, String privacyURL) {
         this.context = context;

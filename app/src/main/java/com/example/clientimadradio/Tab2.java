@@ -185,14 +185,15 @@ public class Tab2 extends Fragment {
                     }
                 });
             } catch (Exception ex) {
-                Toast.makeText(getActivity(), String.valueOf(ex), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getActivity(), String.valueOf(ex), Toast.LENGTH_SHORT).show();
             }
 
             linearLayout_click.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), al_item.get(position).name_station, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getActivity(), al_item.get(position).name_station, Toast.LENGTH_SHORT).show();
                     MainActivity.play(al_item.get(position).url, 0, al_item.get(position).name_station);
+
 
                 }
             });

@@ -1,7 +1,9 @@
 package com.example.clientimadradio;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -27,8 +29,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.ads.consent.ConsentInformation;
+import com.google.ads.consent.ConsentStatus;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.IOException;
 
@@ -36,13 +42,16 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         NavigationView.OnNavigationItemSelectedListener {
     public final static String stream = "http://rtstream.tanitweb.com/nationale";
     public static TextView txt_play;
+    public static Context context;
+    public static InterstitialAd interstitialAd;
+    public static com.wang.avi.AVLoadingIndicatorView avi;
+    public static int adsShow = 0;
     static ImageView play;
     static ImageView icon_play;
     static MediaPlayer mediaPlayer;
     static boolean started = false;
     static boolean prepared = false;
     static PlayTask PlayTask;
-    Context context;
     db_manager dbase;
     ConsentSDK consentSDK;
     boolean search = false;
@@ -53,13 +62,56 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
 
     //new player
     public static void play(String url, int img, String name) {
+        prepared = false;
         play.setEnabled(false);
+        avi.show();
         mediaPlayer.stop();
         PlayTask.cancel(true);
         mediaPlayer = new MediaPlayer();
         PlayTask = new PlayTask();
+        txt_play.setText(name);
         PlayTask.execute(url);
-        MainActivity.txt_play.setText(name);
+        showadsMethod();
+    }
+
+    public static AdRequest showads(Context context) {
+        AdRequest request;
+        if (ConsentInformation.getInstance(context).isRequestLocationInEeaOrUnknown()) {
+            if (ConsentInformation.getInstance(context).getConsentStatus() == ConsentStatus.PERSONALIZED) {
+                request = new AdRequest.Builder().build();
+            } else {
+                Bundle extras = new Bundle();
+                extras.putString("npa", "1");
+                request = new AdRequest.Builder()
+                        .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                        .build();
+            }
+        } else {
+            request = new AdRequest.Builder().build();
+        }
+        return request;
+    }
+
+    //counter show ads
+    public static void showadsMethod() {
+        if (!interstitialAd.isLoaded()){
+            interstitialAd.loadAd(showads(context));
+        }
+        adsShow++;
+        //Toast.makeText(context, String.valueOf(adsShow), Toast.LENGTH_SHORT).show();
+
+        if (adsShow == 5 && interstitialAd.isLoaded()) {
+            interstitialAd.show();
+
+
+
+            adsShow=10;
+        } else if (adsShow % 10 == 0 && interstitialAd.isLoaded()) {
+            //Toast.makeText(context, "show", Toast.LENGTH_SHORT).show();
+            interstitialAd.show();
+
+
+        }
 
 
     }
@@ -69,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         context = this;
+        avi = findViewById(R.id.aviMain);
         consentSDK = new ConsentSDK.Builder(this)
                 .addPrivacyPolicy("http://www.mediafire.com/file/dmx2x432cm8m1lm/pry.txt/file") // Add your privacy policy url
                 .addPublisherId("pub-4657176966074920") // Add your admob publisher id
@@ -84,12 +137,14 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        interstitialAd.loadAd(showads(this));
 
 
         //================
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.color1));
-
         setSupportActionBar(toolbar);
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -106,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //===================
@@ -177,13 +231,12 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
             }
         });
         PlayTask.execute(stream);
+
+
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-    }
-
-    public void clc_play(View view) {
     }
 
     @Override
@@ -209,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
             volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onStopTrackingTouch(SeekBar arg0) {
+                    showadsMethod();
                 }
 
                 @Override
@@ -244,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
                 consentSDK.checkConsent(new ConsentSDK.ConsentCallback() {
                     @Override
                     public void onResult(boolean isRequestLocationInEeaOrUnknown) {
-                        Toast.makeText(context, String.valueOf(isRequestLocationInEeaOrUnknown), Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(context, String.valueOf(isRequestLocationInEeaOrUnknown), Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
@@ -272,11 +326,37 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
 
         } else if (id == R.id.exit) {
 
-            mediaPlayer.stop();
-            PlayTask.cancel(true);
-            ActivityCompat.finishAffinity(MainActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            super.onBackPressed();
+            builder.setTitle("Confirm");
+            builder.setMessage("Do you want to quit the application ?");
+
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing but close the dialog
+                    mediaPlayer.stop();
+                    PlayTask.cancel(true);
+                    ActivityCompat.finishAffinity(MainActivity.this);
+                    dialog.dismiss();
+
+
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alert = builder.create();
+
+            alert.show();
+
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -332,14 +412,28 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         startActivity(myIntent);
     }
 
+    //play task
     public static class PlayTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+
+        }
 
         @Override
         protected Boolean doInBackground(String... strings) {
 
             try {
-
                 mediaPlayer.setDataSource(strings[0]);
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                    }
+                });
+
                 mediaPlayer.prepare();
                 mediaPlayer.start();
                 prepared = true;
@@ -347,6 +441,8 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
             return prepared;
         }
 
@@ -355,10 +451,10 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             play.setEnabled(true);
+            avi.hide();
 
 
         }
     }
-
 
 }

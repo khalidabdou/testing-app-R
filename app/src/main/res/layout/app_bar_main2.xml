@@ -25,4 +25,14 @@
 
     <include layout="@layout/activity_main" />
 
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/aviMain"
+        style="@style/AVLoadingIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:indicatorColor="#ee5253"
+        app:indicatorName="BallPulseIndicator" />
+
 </android.support.design.widget.CoordinatorLayout>

@@ -2,7 +2,7 @@
 <resources>
 
     <color name="colorPrimary">#ff6b6b</color>
-    <color name="colorPrimaryDark">#34495e</color>
+    <color name="colorPrimaryDark">#34495E</color>
     <color name="colorAccent">#b5c0302b</color>
     <color name="flatui_turquoise">#1abc9c</color>
     <color name="flatui_green_sea">#5ad9c0</color>
