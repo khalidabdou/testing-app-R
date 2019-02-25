@@ -227,14 +227,14 @@ public class Tab1 extends Fragment {
             LayoutInflater layoutInflater = getLayoutInflater();
             View view2 = layoutInflater.inflate(R.layout.item_radio, null);
             TextView txt_name = view2.findViewById(R.id.txt_itme);
-            TextView txt_desc = view2.findViewById(R.id.txt_desc);
+
             final ImageView img_fav = view2.findViewById(R.id.img_favorite);
             LinearLayout linearLayout_click = view2.findViewById(R.id.ll_click);
             ImageView icon_st = view2.findViewById(R.id.iconst);
 
             icon_st.setImageDrawable(getResources().getDrawable(geticon(al_item.get(position).ids)));
             txt_name.setText(al_item.get(position).name_station);
-            txt_desc.setText(al_item.get(position).desc);
+
             if (al_item.get(position).favorite == 1) {
                 img_fav.setImageDrawable(getResources().getDrawable(R.drawable.favor));
             }
