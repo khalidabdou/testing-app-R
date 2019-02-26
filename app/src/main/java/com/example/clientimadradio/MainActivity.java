@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.ads.consent.ConsentInformation;
 import com.google.ads.consent.ConsentStatus;
@@ -37,10 +36,11 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentInteractionListener, Tab2.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
-    public final static String stream = "http://rtstream.tanitweb.com/nationale";
+    public final static String stream = "http://rtstream.tanitweb.com/nationale"; //Todo :station  par defaut
     public static TextView txt_play;
     public static Context context;
     public static InterstitialAd interstitialAd;
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
 
     //counter show ads
     public static void showadsMethod() {
-        if (!interstitialAd.isLoaded()){
+        if (!interstitialAd.isLoaded()) {
             interstitialAd.loadAd(showads(context));
         }
         adsShow++;
@@ -104,8 +104,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
             interstitialAd.show();
 
 
-
-            adsShow=10;
+            adsShow = 10;
         } else if (adsShow % 10 == 0 && interstitialAd.isLoaded()) {
             //Toast.makeText(context, "show", Toast.LENGTH_SHORT).show();
             interstitialAd.show();
@@ -230,7 +229,15 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
                 }
             }
         });
-        PlayTask.execute(stream);
+
+
+//// play par defaut
+        ArrayList<class_itm> defalt=dbase.getsations();
+        PlayTask.execute(defalt.get(0).url);
+        ImageView imgp=findViewById(R.id.icon_play);
+        imgp.setImageDrawable(getResources().getDrawable(Tab1.geticon(defalt.get(0).ids)));
+        TextView txtplay=findViewById(R.id.txt_payed);
+        txtplay.setText(defalt.get(0).name_station);
 
 
     }

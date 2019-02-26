@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="7dp"
-            android:text="Radio Nationale Tunisienne"
+            android:text=""
             android:textColor="#ff6b6b"
             android:textSize="14sp" />
 
