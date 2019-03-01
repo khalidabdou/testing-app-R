@@ -292,9 +292,13 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+            //todo : icon privacy
         if (id == R.id.Privacy) {
             // Handle the camera action
+
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com")); // todo : change it
+            startActivity(browserIntent);
+            //todo : icon gdpr
         } else if (id == R.id.GDPR) {
 // To request the consent form to re-edit it for the users within EEA
             if (consentSDK.isUserLocationWithinEea(context)) {
@@ -312,12 +316,15 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
                 // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
             }
+            //todo : icon more
         } else if (id == R.id.more_app) {
             openWebPage("http://play.google.com/store/apps/details?id=" + getPackageName());
 
-
+                //todo : icon rate
         } else if (id == R.id.rate_app) {
             openWebPage("http://play.google.com/store/apps/details?id=" + getPackageName());
+
+            //todo : icon share
         } else if (id == R.id.nav_share) {
             try {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -330,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements Tab1.OnFragmentIn
             } catch (Exception e) {
                 //e.toString();
             }
-
+            //todo : icon exit
         } else if (id == R.id.exit) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
